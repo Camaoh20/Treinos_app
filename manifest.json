@@ -1,0 +1,15 @@
+{
+  "name": "Treinos",
+  "short_name": "Treinos",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#4a9de0",
+  "theme_color": "#4a9de0"
+}
