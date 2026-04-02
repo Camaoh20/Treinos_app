@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treinos — Médio Centro</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --green: #1a6abf;
+      --green-light: #2d88e0;
+      --green-dark: #4a9de0;
+      --bg: #ffffff;
+      --card-bg: #ddeeff;
+      --card-border: #b3d4f5;
+      --text: #0d2a45;
+      --text-muted: #3a6a99;
+      --badge-easy: #c8ebd8;
+      --badge-easy-text: #1a6b3a;
+      --badge-med: #fff3c4;
+      --badge-med-text: #7a5a00;
+      --badge-hard: #fdd;
+      --badge-hard-text: #a00;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 32px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--green-dark);
+      padding: 20px 20px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 26px;
+      cursor: pointer;
+      padding: 4px 10px 4px 0;
+      display: none;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .back-btn.visible {
+      display: block;
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    header p.subtitle {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 2px;
+    }
+
+    /* ── HOME ── */
+    #view-home {
+      padding: 24px 16px 0;
+    }
+
+    .intro-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .intro-box strong {
+      color: var(--text);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .cat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px 16px 20px;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .cat-card:active {
+      transform: scale(0.96);
+      background: #1e3d2a;
+      border-color: var(--green);
+    }
+
+    .cat-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .cat-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .cat-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cat-arrow {
+      align-self: flex-end;
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-top: 4px;
+    }
+
+    /* ── EXERCISE LIST ── */
+    #view-category {
+      padding: 20px 16px 0;
+      display: none;
+    }
+
+    .cat-header-desc {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .exercise-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .exercise-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      gap: 12px;
+    }
+
+    .exercise-title-block {
+      flex: 1;
+    }
+
+    .exercise-num {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .exercise-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .exercise-toggle {
+      color: var(--text-muted);
+      font-size: 18px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .exercise-card.open .exercise-toggle {
+      transform: rotate(180deg);
+    }
+
+    .exercise-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 16px 12px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .badge-easy   { background: var(--badge-easy);  color: var(--badge-easy-text); }
+    .badge-medio  { background: var(--badge-med);   color: var(--badge-med-text); }
+    .badge-dificil{ background: var(--badge-hard);  color: var(--badge-hard-text); }
+    .badge-info   { background: #1a2e40; color: #56b3e8; }
+
+    .exercise-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .exercise-card.open .exercise-body {
+      max-height: 600px;
+    }
+
+    .exercise-body-inner {
+      padding: 0 16px 20px;
+      border-top: 1px solid var(--card-border);
+      padding-top: 14px;
+    }
+
+    .exercise-body-inner p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .objetivo-box {
+      background: var(--green-dark);
+      border-left: 3px solid var(--green);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .objetivo-box span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <button class="back-btn" id="backBtn" onclick="goHome()">&#8592;</button>
+    <div>
+      <h1 id="headerTitle">Treinos · Médio Centro</h1>
+      <p class="subtitle" id="headerSub">Bola size 3 · 15 anos</p>
+    </div>
+  </div>
+</header>
+
+<!-- HOME -->
+<div id="view-home">
+  <div class="intro-box">
+    <strong>4–5 sessões/semana · 30–40 min</strong><br>
+    Equipamento: bola size 3, parede, 4–6 garrafas, fita adesiva (opcional).
+  </div>
+
+  <div class="categories-grid">
+    <div class="cat-card" onclick="openCategory('controlo')">
+      <div class="cat-icon">🎯</div>
+      <div>
+        <div class="cat-name">Controlo</div>
+        <div class="cat-count">3 exercícios</div>
+      </div>
+      <div class="cat-arrow">›</div>
+    </div>
+    <div class="cat-card" onclick="openCategory('passe')">
+      <div class="cat-icon">⚡</div>
+      <div>
+        <div class="cat-name">Passe</div>
+        <div class="cat-count">3 exercícios</div>
+      </div>
+      <div class="cat-arrow">›</div>
+    </div>
+    <div class="cat-card" onclick="openCategory('conducao')">
+      <div class="cat-icon">🔄</div>
+      <div>
+        <div class="cat-name">Condução</div>
+        <div class="cat-count">3 exercícios</div>
+      </div>
+      <div class="cat-arrow">›</div>
+    </div>
+    <div class="cat-card" onclick="openCategory('primeiro-toque')">
+      <div class="cat-icon">✋</div>
+      <div>
+        <div class="cat-name">Primeiro Toque</div>
+        <div class="cat-count">3 exercícios</div>
+      </div>
+      <div class="cat-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY VIEW -->
+<div id="view-category"></div>
+
+<script>
+  const data = {
+    controlo: {
+      title: 'Controlo',
+      icon: '🎯',
+      desc: 'O médio centro recebe a bola sob pressão. Controlo orientado e firme é a base de tudo.',
+      exercises: [
+        {
+          num: '1.1',
+          name: 'Juggling por zonas do pé',
+          dificuldade: 'Fácil',
+          espaco: '1 m²',
+          duracao: '5 min',
+          desc: 'Alterna sequências de 5 toques com o bico, 5 com o peito do pé e 5 com o exterior. Não deixes a bola subir mais de 1 metro. Mantém os joelhos ligeiramente fletidos.',
+          objetivo: '100 toques consecutivos',
+        },
+        {
+          num: '1.2',
+          name: 'Controlo contra a parede',
+          dificuldade: 'Fácil',
+          espaco: '3 m',
+          duracao: '8 min',
+          desc: 'Atira a bola com a mão contra a parede a 2–3 metros, controla com diferentes superfícies (pé direito, pé esquerdo, peito do pé, lado interno). Varia a força e altura do ressalto.',
+          objetivo: 'Parar a bola morta num único toque',
+        },
+        {
+          num: '1.3',
+          name: 'Controlo orientado + giro',
+          dificuldade: 'Médio',
+          espaco: '4–5 m',
+          duracao: '10 min',
+          desc: 'Atira contra a parede, recebe e orienta a bola para um lado imaginário (como se fugisses de um adversário), dá 2–3 toques em condução e passa de volta à parede. Alterna a direção de saída a cada repetição. Simula receber pressionado e sair a jogar.',
+          objetivo: 'Fluidez e velocidade de execução',
+        },
+      ],
+    },
+    passe: {
+      title: 'Passe',
+      icon: '⚡',
+      desc: 'O médio centro tem de passar rápido e com precisão, dos dois pés. A parede é o teu parceiro de treino perfeito.',
+      exercises: [
+        {
+          num: '2.1',
+          name: 'Passe a um toque na parede',
+          dificuldade: 'Fácil',
+          espaco: '2–3 m',
+          duracao: '3 × 2 min',
+          desc: 'A 2 metros da parede, passa e recebe em contínuo com o interior do pé. Começa com pé dominante, depois alternado. Mantém o corpo de frente e os ombros relaxados. Aumenta progressivamente a velocidade de execução.',
+          objetivo: 'Ritmo constante, sem erros',
+        },
+        {
+          num: '2.2',
+          name: 'Passe com apoio + rotação',
+          dificuldade: 'Médio',
+          espaco: '3 m',
+          duracao: '3 × 3 min',
+          desc: 'Passa para a parede, enquanto a bola volta faz uma rotação de 180° e recebe do lado oposto. Treinas velocidade de pensamento, receção e posicionamento do corpo. Exige antecipação constante — é um dos exercícios mais específicos para um médio.',
+          objetivo: 'Antecipar antes do ressalto',
+        },
+        {
+          num: '2.3',
+          name: 'Circuito de passe com alvos',
+          dificuldade: 'Médio',
+          espaco: '3–4 m',
+          duracao: '10 min',
+          desc: 'Marca 3 cruzes na parede com fita (baixo-esquerda, centro, baixo-direita). Decide o alvo antes de tocar na bola e acerta em sequência. Treinas decisão + precisão, que é exatamente o que um médio tem de fazer sob pressão.',
+          objetivo: '8 em 10 no alvo certo',
+        },
+      ],
+    },
+    conducao: {
+      title: 'Condução',
+      icon: '🔄',
+      desc: 'Num espaço pequeno, o médio centro precisa de condução curta, rápida e protegida — não de sprints longos.',
+      exercises: [
+        {
+          num: '3.1',
+          name: 'Slalom em ziguezague',
+          dificuldade: 'Fácil',
+          espaco: '4–5 m',
+          duracao: '4 × 1 min',
+          desc: 'Coloca 4–6 garrafas de água (ou sapatos) em linha com 60–80 cm de intervalo. Faz slalom de ida e volta, alternando pé interno e externo. O desafio é manter a bola colada ao pé e o ritmo constante, não a velocidade máxima.',
+          objetivo: 'Sem tocar nos obstáculos',
+        },
+        {
+          num: '3.2',
+          name: 'Figura de 8 em espaço mínimo',
+          dificuldade: 'Médio',
+          espaco: '2 m²',
+          duracao: '3 × 2 min',
+          desc: 'Com 2 garrafas a 1 metro de distância, conduz em figura de 8 usando apenas o exterior e interior do pé. Mantém a bola dentro de um quadrado imaginário de 2×2 metros. Aumenta a velocidade gradualmente. Excelente para controlo em espaços fechados.',
+          objetivo: 'Fluidez sem pausas',
+        },
+        {
+          num: '3.3',
+          name: 'Stop-and-go explosivo',
+          dificuldade: 'Difícil',
+          espaco: '3×3 m',
+          duracao: '3 × 2 min',
+          desc: 'Conduz 3 toques rápidos numa direção, para abruptamente com a planta do pé, muda de direção e arranca explosivamente. Simula situações reais de jogo: avançar, parar ao sentir pressão, sair para outro lado. Faz em 4 direções diferentes. O "stop" tem de ser instantâneo — treinas resistência à pressão adversária.',
+          objetivo: 'Stop limpo + arrancada imediata',
+        },
+      ],
+    },
+    'primeiro-toque': {
+      title: 'Primeiro Toque',
+      icon: '✋',
+      desc: 'O primeiro toque define tudo num médio centro. Com um bom primeiro toque, ganhas tempo e espaço antes mesmo de os adversários chegarem.',
+      exercises: [
+        {
+          num: '4.1',
+          name: 'Receção no ar — variação de superfície',
+          dificuldade: 'Fácil',
+          espaco: '1–2 m²',
+          duracao: '8 min',
+          desc: 'Atira a bola ao ar (altura da cabeça), deixa descer e recebe com o peito do pé, amortecendo para o chão. Alterna: pé direito, pé esquerdo, coxa, peito. A bola deve ficar a menos de 50 cm de ti após o controlo. Faz em séries de 10 por superfície.',
+          objetivo: 'Bola controlada a 50 cm',
+        },
+        {
+          num: '4.2',
+          name: 'Ressalto imprevisível na parede',
+          dificuldade: 'Médio',
+          espaco: '3–4 m',
+          duracao: '10 min',
+          desc: 'Atira a bola com força contra a parede em ângulo, de forma que o ressalto seja imprevisível. Reage e controla onde a bola vier. Treinas reação, adaptação e controlo sob incerteza — como numa bola dividida no meio-campo. Varia ângulos e força constantemente.',
+          objetivo: 'Controlo limpo em 80% das situações',
+        },
+        {
+          num: '4.3',
+          name: 'Primeiro toque + passe imediato',
+          dificuldade: 'Difícil',
+          espaco: '3 m',
+          duracao: '3 × 3 min',
+          desc: 'Atira contra a parede com a mão, recebe com um toque orientado para o lado e passa de imediato de volta. Não há toque extra — controlo + passe em menos de 1 segundo. Simula jogar a 2 toques sob pressão, que é o padrão de um médio de alta qualidade. Começa lento e vai acelerando.',
+          objetivo: 'Sequência fluida, sem hesitações',
+        },
+      ],
+    },
+  };
+
+  function diffBadge(d) {
+    const map = { 'Fácil': 'badge-easy', 'Médio': 'badge-medio', 'Difícil': 'badge-dificil' };
+    return `<span class="badge ${map[d] || 'badge-info'}">${d}</span>`;
+  }
+
+  function openCategory(key) {
+    const cat = data[key];
+    const view = document.getElementById('view-category');
+
+    let html = `<div class="cat-header-desc">${cat.desc}</div>`;
+
+    cat.exercises.forEach((ex, i) => {
+      html += `
+        <div class="exercise-card" id="ex-${i}">
+          <div class="exercise-header" onclick="toggleEx(${i})">
+            <div class="exercise-title-block">
+              <div class="exercise-num">Exercício ${ex.num}</div>
+              <div class="exercise-name">${ex.name}</div>
+            </div>
+            <div class="exercise-toggle">&#8964;</div>
+          </div>
+          <div class="exercise-meta">
+            ${diffBadge(ex.dificuldade)}
+            <span class="badge badge-info">&#9200; ${ex.duracao}</span>
+            <span class="badge badge-info">&#9632; ${ex.espaco}</span>
+          </div>
+          <div class="exercise-body">
+            <div class="exercise-body-inner">
+              <p>${ex.desc}</p>
+              <div class="objetivo-box">
+                <span>Objetivo</span>
+                ${ex.objetivo}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    view.innerHTML = html;
+    view.style.display = 'block';
+    document.getElementById('view-home').style.display = 'none';
+    document.getElementById('headerTitle').textContent = `${cat.icon} ${cat.title}`;
+    document.getElementById('headerSub').textContent = `${cat.exercises.length} exercícios`;
+    document.getElementById('backBtn').classList.add('visible');
+    window.scrollTo(0, 0);
+  }
+
+  function goHome() {
+    document.getElementById('view-category').style.display = 'none';
+    document.getElementById('view-home').style.display = 'block';
+    document.getElementById('headerTitle').textContent = 'Treinos · Médio Centro';
+    document.getElementById('headerSub').textContent = 'Bola size 3 · 15 anos';
+    document.getElementById('backBtn').classList.remove('visible');
+    window.scrollTo(0, 0);
+  }
+
+  function toggleEx(i) {
+    const card = document.getElementById(`ex-${i}`);
+    card.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
